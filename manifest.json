@@ -1,0 +1,37 @@
+{
+  "name": "CivilCalc Pro V7 Field OS",
+  "short_name": "CivilCalc",
+  "description": "Offline-first civil engineering calculators, projects, BOQ, BBS, QC and site productivity.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f6fb",
+  "theme_color": "#2563eb",
+  "lang": "en",
+  "categories": [
+    "productivity",
+    "utilities"
+  ],
+  "shortcuts": [
+    {
+      "name": "New Calculation",
+      "short_name": "Calculate",
+      "url": "./index.html#tools"
+    },
+    {
+      "name": "Site Diary",
+      "short_name": "Diary",
+      "url": "./index.html#diary"
+    },
+    {
+      "name": "History",
+      "short_name": "History",
+      "url": "./index.html#history"
+    },
+    {
+      "name": "Quick Converter",
+      "short_name": "Convert",
+      "url": "./index.html#converter"
+    }
+  ]
+}
