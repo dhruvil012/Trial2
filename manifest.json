@@ -1,0 +1,32 @@
+{
+  "name": "CivilCalc Pro V6 Field OS",
+  "short_name": "CivilCalc",
+  "description": "Offline-first civil engineering field calculator and project productivity PWA.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f7fb",
+  "theme_color": "#2563eb",
+  "lang": "en",
+  "categories": [
+    "productivity",
+    "utilities"
+  ],
+  "shortcuts": [
+    {
+      "name": "New Calculation",
+      "short_name": "Calculate",
+      "url": "./index.html#tools"
+    },
+    {
+      "name": "History",
+      "short_name": "History",
+      "url": "./index.html#history"
+    },
+    {
+      "name": "Quick Converter",
+      "short_name": "Convert",
+      "url": "./index.html#converter"
+    }
+  ]
+}
