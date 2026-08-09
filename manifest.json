@@ -1,1 +1,12 @@
-{"name":"CivilCalc Pro V3.1 — Site Engineer Toolkit","short_name":"CivilCalc Pro","start_url":"./Civil-Engineer-Calculator-Pro-V3.1-Fixed.html","display":"standalone","background_color":"#f3f6fb","theme_color":"#2563eb","description":"Offline-ready civil engineering calculator with site quantity, steel/BBS, survey, finishing and estimation tools"}
+{
+  "name": "CivilCalc Pro V4",
+  "short_name": "CivilCalc",
+  "description": "Civil engineering field calculator and productivity toolkit",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f6fb",
+  "theme_color": "#2563eb",
+  "orientation": "any",
+  "categories": ["productivity", "utilities", "education"]
+}
