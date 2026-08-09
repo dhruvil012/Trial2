@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2563eb">
+<title>Civil Engineer Calculator Pro — V2</title>
+<style>
+:root{
+  --bg:#f4f7fb;--surface:#fff;--surface2:#eef3f9;--text:#172033;--muted:#64748b;
+  --border:#dfe6ef;--primary:#2563eb;--primary2:#1d4ed8;--success:#16a34a;
+  --warning:#d97706;--danger:#dc2626;--purple:#7c3aed;--cyan:#0891b2;
+  --shadow:0 8px 28px rgba(15,23,42,.07);--radius:18px;--radius2:12px;
+}
+[data-theme="dark"]{
+  --bg:#0b1220;--surface:#111a2b;--surface2:#172238;--text:#e7edf7;--muted:#94a3b8;
+  --border:#26354d;--shadow:0 10px 35px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;background:
+radial-gradient(900px 400px at 0 -10%,rgba(37,99,235,.10),transparent 60%),var(--bg);
+color:var(--text);line-height:1.5;min-height:100vh}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid rgba(37,99,235,.25);outline-offset:2px}
+.header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--surface) 88%,transparent);
+backdrop-filter:blur(18px);border-bottom:1px solid var(--border)}
+.header-inner{max-width:1180px;margin:auto;padding:18px 16px;display:flex;align-items:center;gap:14px}
+.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#7c3aed);
+display:grid;place-items:center;color:#fff;font-weight:900;box-shadow:0 8px 20px rgba(37,99,235,.25)}
+.brand h1{font-size:1.08rem;font-weight:850;letter-spacing:-.3px}.brand p{font-size:.73rem;color:var(--muted)}
+.header-actions{margin-left:auto;display:flex;gap:8px}
+.icon-btn{width:40px;height:40px;border:1px solid var(--border);border-radius:12px;background:var(--surface);
+color:var(--muted);display:grid;place-items:center}.icon-btn:hover{border-color:var(--primary);color:var(--primary)}
+.shell{max-width:1180px;margin:auto;padding:20px 16px 70px}
+.hero{display:grid;grid-template-columns:1.35fr .65fr;gap:14px;margin-bottom:18px}
+.hero-card{background:linear-gradient(135deg,#1d4ed8,#4f46e5);color:#fff;border-radius:24px;padding:25px;box-shadow:0 18px 45px rgba(37,99,235,.20)}
+.hero-card h2{font-size:1.75rem;letter-spacing:-.7px}.hero-card p{opacity:.86;margin-top:5px;font-size:.9rem}
+.search{margin-top:18px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:14px;
+display:flex;align-items:center;padding:0 13px}.search input{width:100%;padding:13px 8px;background:transparent;border:0;outline:0;color:#fff}
+.search input::placeholder{color:rgba(255,255,255,.72)}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+.stat b{font-size:1.35rem}.stat span{display:block;color:var(--muted);font-size:.74rem;margin-top:2px}
+.section-title{font-size:.8rem;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);font-weight:800;margin:20px 2px 10px}
+.quick-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.quick{border:1px solid var(--border);background:var(--surface);border-radius:15px;padding:14px 10px;text-align:left;box-shadow:var(--shadow);color:var(--text)}
+.quick:hover{transform:translateY(-2px);border-color:var(--primary)}.quick .qicon{font-size:1.3rem}.quick b{display:block;font-size:.76rem;margin-top:7px}.quick small{color:var(--muted);font-size:.66rem}
+.category-bar{display:flex;gap:8px;overflow:auto;padding:3px 0 13px;scrollbar-width:none}.category-bar::-webkit-scrollbar{display:none}
+.cat{white-space:nowrap;border:1px solid var(--border);background:var(--surface);color:var(--muted);padding:9px 13px;border-radius:999px;font-weight:750;font-size:.75rem}
+.cat.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.tool{display:flex;gap:13px;align-items:flex-start;border:1px solid var(--border);background:var(--surface);border-radius:18px;padding:17px;
+box-shadow:var(--shadow);text-align:left;color:var(--text);transition:.2s}.tool:hover{transform:translateY(-2px);border-color:var(--primary)}
+.tool-icon{width:42px;height:42px;border-radius:13px;background:rgba(37,99,235,.10);display:grid;place-items:center;font-size:1.2rem;flex:0 0 42px}
+.tool b{font-size:.86rem}.tool p{font-size:.7rem;color:var(--muted);margin-top:3px}
+.workspace{display:none}.workspace.active{display:block}
+.backbar{display:flex;align-items:center;gap:9px;margin:3px 0 14px}.back{border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:10px;padding:8px 11px}
+.workspace-title h2{font-size:1.25rem}.workspace-title p{font-size:.76rem;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:14px;box-shadow:var(--shadow)}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:17px}.card-title{font-size:1rem;font-weight:850}
+.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.form-group label{display:block;color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.7px;font-weight:800;margin-bottom:6px}
+.input{display:flex;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:11px;overflow:hidden}
+.input input,.input select{width:100%;border:0;background:transparent;color:var(--text);padding:11px 12px;outline:0;min-width:0}
+.input .unit{padding:0 11px;color:var(--muted);font-size:.72rem;font-weight:800;border-left:1px solid var(--border);background:var(--surface2);height:100%;display:flex;align-items:center}
+select{appearance:auto}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.btn{border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:9px 14px;border-radius:10px;font-weight:800;font-size:.76rem}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}.btn.success{background:var(--success);border-color:var(--success);color:#fff}.btn.danger{background:transparent;color:var(--danger)}
+.results{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.result{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:15px;text-align:center}
+.result b{display:block;font-size:1.22rem;line-height:1.2}.result span{display:block;color:var(--muted);font-size:.68rem;margin-top:5px}.result.primary{border-color:rgba(37,99,235,.45);background:rgba(37,99,235,.07)}
+.result.primary b{color:var(--primary)}.result.green b{color:var(--success)}.result.orange b{color:var(--warning)}
+.detail{margin-top:13px;border:1px solid var(--border);border-radius:13px;overflow:hidden}.detail-row{display:flex;justify-content:space-between;padding:9px 12px;border-bottom:1px solid var(--border);font-size:.78rem}.detail-row:last-child{border:0}.detail-row span:first-child{color:var(--muted)}.detail-row span:last-child{font-weight:800}
+.note{margin-top:13px;padding:11px 13px;border-left:3px solid var(--primary);background:rgba(37,99,235,.06);border-radius:9px;color:var(--muted);font-size:.72rem}
+.formula{font-family:ui-monospace,monospace;font-size:.7rem;color:var(--muted);margin-top:11px}
+.subtabs{display:flex;gap:7px;overflow:auto;margin-bottom:14px}.subtab{border:1px solid var(--border);background:var(--surface);color:var(--muted);padding:9px 12px;border-radius:10px;font-size:.74rem;font-weight:800;white-space:nowrap}.subtab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.hidden{display:none!important}
+.converter-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:end}.swap{width:42px;height:42px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);color:var(--primary);font-size:1.1rem}
+.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:13px}.table{width:100%;border-collapse:collapse;min-width:600px}.table th,.table td{padding:9px 11px;border-bottom:1px solid var(--border);font-size:.72rem;text-align:left}.table th{background:var(--surface2);color:var(--muted);font-size:.66rem;text-transform:uppercase}.table tr:last-child td{border:0}
+.drawer-overlay{display:none;position:fixed;inset:0;background:rgba(2,8,23,.45);z-index:80}.drawer{position:fixed;right:0;top:0;height:100%;width:min(430px,94vw);background:var(--surface);z-index:81;transform:translateX(100%);transition:.3s;box-shadow:-20px 0 60px rgba(0,0,0,.2);display:flex;flex-direction:column}.drawer.show{transform:none}.drawer-overlay.show{display:block}
+.drawer-head{padding:17px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between}.drawer-body{padding:14px 18px;overflow:auto;flex:1}.history-item{border:1px solid var(--border);border-radius:13px;padding:12px;margin-bottom:9px;background:var(--bg)}.history-item b{font-size:.76rem}.history-item small{float:right;color:var(--muted)}.history-item pre{white-space:pre-wrap;color:var(--muted);font-size:.7rem;margin-top:7px;font-family:inherit}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,120px);background:#172033;color:#fff;padding:11px 16px;border-radius:11px;font-size:.76rem;font-weight:800;z-index:100;opacity:0;transition:.25s}.toast.show{transform:translate(-50%,0);opacity:1}
+.footer{text-align:center;color:var(--muted);font-size:.7rem;padding:25px;border-top:1px solid var(--border)}
+@media(max-width:900px){.hero{grid-template-columns:1fr}.quick-grid{grid-template-columns:repeat(3,1fr)}.tool-grid{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:repeat(2,1fr)}.results{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.shell{padding:13px 11px 50px}.header-inner{padding:12px}.hero-card{padding:20px}.hero-card h2{font-size:1.4rem}.quick-grid{grid-template-columns:repeat(2,1fr)}.tool-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.converter-grid{grid-template-columns:1fr}.swap{justify-self:center}.results{grid-template-columns:repeat(2,1fr)}.card{padding:16px}.brand p{display:none}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">CE</div>
+    <div class="brand"><h1>Civil Engineer Calculator Pro</h1><p>Professional field calculators • V2</p></div>
+    <div class="header-actions">
+      <button class="icon-btn" id="themeBtn" title="Toggle theme">☾</button>
+      <button class="icon-btn" onclick="openHistory()" title="History">🕘</button>
+    </div>
+  </div>
+</header>
+
+<main class="shell">
+<section id="home">
+  <div class="hero">
+    <div class="hero-card">
+      <h2>Everything a civil engineer needs.</h2>
+      <p>Fast quantity, reinforcement, estimation and engineering calculations — built to work offline in one HTML file.</p>
+      <div class="search">🔎 <input id="searchInput" placeholder="Search calculator…"></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="toolCount">20+</b><span>Engineering tools</span></div>
+      <div class="stat"><b id="historyCount">0</b><span>Saved calculations</span></div>
+      <div class="stat"><b>100%</b><span>Browser-side</span></div>
+      <div class="stat"><b>∞</b><span>No account required</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Quick access</div>
+  <div class="quick-grid">
+    <button class="quick" onclick="openTool('slab')"><div class="qicon">▤</div><b>RCC Slab</b><small>Concrete + steel</small></button>
+    <button class="quick" onclick="openTool('beam')"><div class="qicon">▬</div><b>RCC Beam</b><small>Bars + stirrups</small></button>
+    <button class="quick" onclick="openTool('column')"><div class="qicon">▥</div><b>Column Steel</b><small>Vertical + ties</small></button>
+    <button class="quick" onclick="openTool('bbs')"><div class="qicon">▦</div><b>BBS</b><small>Bar schedule</small></button>
+    <button class="quick" onclick="openTool('estimator')"><div class="qicon">₹</div><b>Estimator</b><small>Material cost</small></button>
+    <button class="quick" onclick="openTool('converter')"><div class="qicon">⇄</div><b>Converter</b><small>Engineering units</small></button>
+  </div>
+
+  <div class="section-title">Categories</div>
+  <div class="category-bar" id="categoryBar">
+    <button class="cat active" data-cat="all">All</button><button class="cat" data-cat="rcc">RCC</button>
+    <button class="cat" data-cat="steel">Steel</button><button class="cat" data-cat="masonry">Masonry</button>
+    <button class="cat" data-cat="finishing">Finishing</button><button class="cat" data-cat="site">Site</button>
+    <button class="cat" data-cat="estimate">Estimation</button><button class="cat" data-cat="tools">Tools</button>
+  </div>
+
+  <div class="tool-grid" id="toolGrid"></div>
+</section>
+
+<section id="workspace" class="workspace">
+  <div class="backbar"><button class="back" onclick="closeTool()">← Back</button><div class="workspace-title"><h2 id="wsTitle"></h2><p id="wsDesc"></p></div></div>
+  <div id="toolContent"></div>
+</section>
+</main>
+
+<footer class="footer">Civil Engineer Calculator Pro V2 • Estimates are approximate and must be checked against project specifications, drawings, codes and approved design.</footer>
+
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeHistory()"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head"><b>Saved Calculations</b><button class="icon-btn" onclick="closeHistory()">×</button></div>
+  <div class="drawer-body" id="historyBody"></div>
+  <div style="padding:14px 18px;border-top:1px solid var(--border)"><button class="btn danger" style="width:100%" onclick="clearHistory()">Clear history</button></div>
+</aside>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const q=(s,p=document)=>p.querySelector(s);
+const qa=(s,p=document)=>[...p.querySelectorAll(s)];
+const fmt=(n,d=2)=>Number.isFinite(n)?n.toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';
+const num=id=>parseFloat($(id)?.value);
+const safe=(n)=>Number.isFinite(n)&&n>=0;
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),1800)}
+function val(id,n,unit=''){if($(id))$(id).textContent=Number.isFinite(n)?fmt(n,typeof n==='number'?2:2)+(unit?' '+unit:''):'—'}
+function save(tag,text){const a=JSON.parse(localStorage.getItem('ce_history')||'[]');a.unshift({id:Date.now(),tag,text});localStorage.setItem('ce_history',JSON.stringify(a.slice(0,100)));updateHistory();toast('Saved to history')}
+function copyText(text){navigator.clipboard?.writeText(text).then(()=>toast('Copied')).catch(()=>{const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();toast('Copied')})}
+function actionBar(text){return `<div class="actions"><button class="btn success" onclick='copyText(${JSON.stringify(text)})'>Copy result</button><button class="btn primary" onclick='save(${JSON.stringify(text.split("\\n")[0])},${JSON.stringify(text)})'>Save</button><button class="btn" onclick="window.print()">Print / PDF</button></div>`}
+
+const tools=[
+{id:'angle',cat:'tools',icon:'📐',name:'Right Triangle',desc:'Hypotenuse, area, perimeter and angles'},
+{id:'mix',cat:'rcc',icon:'🧱',name:'Concrete Mix',desc:'Nominal mix quantity estimator'},
+{id:'volume',cat:'site',icon:'◼️',name:'Volume & Weight',desc:'Volume, density, weight and area'},
+{id:'converter',cat:'tools',icon:'⇄',name:'Engineering Converter',desc:'Length, area, volume, pressure and more'},
+{id:'steel',cat:'steel',icon:'🔩',name:'Bar Weight',desc:'TMT/rebar weight by dia, length and quantity'},
+{id:'bbs',cat:'steel',icon:'📋',name:'BBS Generator',desc:'Bar schedule, cutting length and weight'},
+{id:'cutting',cat:'steel',icon:'✂️',name:'Stirrup Cutting',desc:'Beam/column tie cutting length'},
+{id:'slab',cat:'rcc',icon:'▤',name:'RCC Slab',desc:'Concrete, formwork, bars and steel'},
+{id:'beam',cat:'rcc',icon:'▬',name:'RCC Beam',desc:'Concrete, main bars and stirrups'},
+{id:'column',cat:'rcc',icon:'▥',name:'RCC Column',desc:'Concrete, vertical bars and ties'},
+{id:'footing',cat:'rcc',icon:'⬟',name:'Footing',desc:'Concrete, excavation and reinforcement'},
+{id:'brick',cat:'masonry',icon:'🧱',name:'Brickwork',desc:'Bricks, mortar, cement and sand'},
+{id:'plaster',cat:'masonry',icon:'▰',name:'Plaster',desc:'Cement and sand by area/thickness'},
+{id:'paint',cat:'finishing',icon:'🎨',name:'Paint & Putty',desc:'Paint, primer and putty quantity'},
+{id:'area',cat:'site',icon:'📏',name:'Area & Slope',desc:'Area, slope, gradient and rise/run'},
+{id:'estimator',cat:'estimate',icon:'₹',name:'Cost Estimator',desc:'Material and labour cost summary'},
+{id:'water',cat:'rcc',icon:'💧',name:'Water / W-C Ratio',desc:'Water quantity from cement and W/C ratio'},
+{id:'lap',cat:'steel',icon:'↔',name:'Lap & Development',desc:'Quick Ld/lap length reference calculator'},
+{id:'stair',cat:'rcc',icon:'🪜',name:'Staircase',desc:'Rise, tread, slope and waist volume'},
+{id:'opening',cat:'masonry',icon:'🚪',name:'Wall Openings',desc:'Deduct doors/windows from wall area'}
+];
+
+function renderTools(list=tools){
+  $('toolGrid').innerHTML=list.map(t=>`<button class="tool" data-cat="${t.cat}" data-name="${(t.name+' '+t.desc).toLowerCase()}" onclick="openTool('${t.id}')"><div class="tool-icon">${t.icon}</div><div><b>${t.name}</b><p>${t.desc}</p></div></button>`).join('');
+  $('toolCount').textContent=tools.length+'+';
+}
+function filterTools(cat){qa('.cat').forEach(x=>x.classList.toggle('active',x.dataset.cat===cat));renderTools(cat==='all'?tools:tools.filter(x=>x.cat===cat))}
+$('categoryBar').addEventListener('click',e=>{const b=e.target.closest('.cat');if(b)filterTools(b.dataset.cat)});
+$('searchInput').addEventListener('input',e=>{const s=e.target.value.toLowerCase().trim();renderTools(s?tools.filter(t=>(t.name+' '+t.desc+' '+t.cat).toLowerCase().includes(s)):tools)});
+
+const shells={
+angle:{title:'Right Triangle Solver',desc:'Enter any two sides, or all three to verify.',html:()=>`
+<div class="card"><div class="card-head"><div class="card-title">Triangle inputs</div></div><div class="form-grid">
+${field('a','Side A (base)','m','number','',`calcAngle()`)}
+${field('b','Side B (height)','m','number','',`calcAngle()`)}
+${field('c','Hypotenuse C','m','number','',`calcAngle()`)}
+</div><div class="actions"><button class="btn" onclick="clearFields('a','b','c');calcAngle()">Clear</button></div></div>
+<div class="card"><div class="card-head"><div class="card-title">Results</div></div><div class="results">
+${res('angHyp','Hypotenuse','primary','m')}${res('angArea','Area','','m²')}${res('angPer','Perimeter','','m')}${res('angA','Angle A','','°')}${res('angB','Angle B','','°')}
+</div><div id="angVerify" class="note">Enter values to calculate.</div><div class="formula">a² + b² = c²</div><div id="angleActions"></div></div>`},
+mix:{title:'Concrete Mix Quantity',desc:'Nominal ratio estimator with editable dry-volume and material densities.',html:()=>`
+<div class="card"><div class="card-head"><div class="card-title">Mix inputs</div></div><div class="form-grid">
+<div class="form-group"><label>Grade / ratio</label><div class="input"><select id="mixGrade" onchange="calcMix()"><option value="1,3,6">M10 — 1:3:6</option><option value="1,2,4">M15 — 1:2:4</option><option value="1,1.5,3" selected>M20 — 1:1.5:3</option><option value="1,1,2">M25 — 1:1:2</option><option value="custom">Custom</option></select></div></div>
+${field('mixVol','Wet concrete volume','m³','number','',`calcMix()`)}
+${field('mixDry','Dry volume factor','','number','1.54',`calcMix()`)}
+${field('mixCementD','Cement density','kg/m³','number','1440',`calcMix()`)}
+${field('mixSandD','Sand density','kg/m³','number','1600',`calcMix()`)}
+${field('mixAggD','Aggregate density','kg/m³','number','1500',`calcMix()`)}
+${field('mixBag','Cement bag','kg','number','50',`calcMix()`)}
+${field('mixWaste','Material wastage','%','number','0',`calcMix()`)}
+</div><div id="mixCustom" class="form-grid hidden" style="margin-top:12px">${field('mixR1','Cement part','','number','1',`calcMix()`)}${field('mixR2','Sand part','','number','1.5',`calcMix()`)}${field('mixR3','Aggregate part','','number','3',`calcMix()`)}</div>
+<div class="note">This is a nominal-mix estimator. Site batching, moisture, aggregate grading and approved mix design can change actual quantities.</div></div>
+<div class="card"><div class="card-title">Material quantities</div><div class="results">${res('mixCement','Cement bags','primary')}${res('mixSand','Sand','orange','m³')}${res('mixAgg','Aggregate','green','m³')}${res('mixCementKg','Cement','','kg')}</div><div class="detail" id="mixDetail"></div><div id="mixActions"></div></div>`},
+volume:{title:'Volume & Weight',desc:'Mixed units with selectable material density.',html:()=>`
+<div class="card"><div class="form-grid">${field('vl','Length','', 'number','',`calcVolume()`)}${field('vb','Breadth','', 'number','',`calcVolume()`)}${field('vh','Height / thickness','', 'number','',`calcVolume()`)}
+${selectField('vlu','Length unit',['m','cm','mm','ft','in'],'m','calcVolume()')}${selectField('vbu','Breadth unit',['m','cm','mm','ft','in'],'m','calcVolume()')}${selectField('vhu','Height unit',['m','cm','mm','ft','in'],'m','calcVolume()')}
+${selectField('density','Density',['2500|RCC','2400|PCC','1920|Brick masonry','2000|Cement mortar','1600|Sand','1450|Aggregate','7850|Steel'],'2400','calcVolume()')}${field('customDensity','Custom density','kg/m³','number','2400',`calcVolume()`,true)}${field('bagSize','Cement bag','kg','number','50',`calcVolume()`)}</div></div>
+<div class="card"><div class="card-title">Results</div><div class="results">${res('vM3','Volume','primary','m³')}${res('vFt','Volume','','ft³')}${res('vWt','Weight','green','kg')}${res('vTon','Weight','','ton')}</div><div class="detail"><div class="detail-row"><span>Top/bottom area</span><span id="vArea">—</span></div><div class="detail-row"><span>Volume</span><span id="vL">—</span></div><div class="detail-row"><span>Volume</span><span id="vYd">—</span></div></div><div id="volumeActions"></div></div>`},
+converter:{title:'Engineering Unit Converter',desc:'Fast conversion across common civil-engineering units.',html:()=>`
+<div class="card"><div class="subtabs" id="convTabs">${['length','area','volume','weight','pressure','force','density','flow'].map((x,i)=>`<button class="subtab ${i?'':'active'}" onclick="setConv('${x}',this)">${x[0].toUpperCase()+x.slice(1)}</button>`).join('')}</div>
+<div class="converter-grid"><div class="form-group"><label>Value</label><div class="input"><input id="cv" type="number" oninput="calcConv()"></div></div><div><button class="swap" onclick="swapConv()">⇄</button></div><div class="form-group"><label>Result</label><div class="input"><input id="co" readonly></div></div></div>
+<div class="form-grid" style="margin-top:12px"><div class="form-group"><label>From</label><div class="input"><select id="cf" onchange="calcConv()"></select></div></div><div class="form-group"><label>To</label><div class="input"><select id="ct" onchange="calcConv()"></select></div></div></div><div id="convActions"></div></div>`},
+steel:{title:'TMT / Rebar Weight',desc:'Weight using the standard D²/162 relation.',html:()=>`
+<div class="card"><div class="form-grid">${selectField('sd','Bar diameter',['6','8','10','12','16','20','25','28','32','40'],'12','calcSteel()')}${field('sl','Length per bar','m','number','',`calcSteel()`)}${field('sq','Number of bars','nos','number','1',`calcSteel()`)}</div><div class="note">Formula: Weight = D² × total length / 162, where D is in mm and length is in metres.</div></div>
+<div class="card"><div class="card-title">Results</div><div class="results">${res('skg','Total steel','primary','kg')}${res('ston','Total steel','','ton')}${res('sperm','Weight per metre','green','kg/m')}${res('seach','Weight per bar','','kg')}</div><div class="detail"><div class="detail-row"><span>Total length</span><span id="stot">—</span></div></div><div id="steelActions"></div></div>`},
+bbs:{title:'BBS Generator',desc:'Create a simple reinforcement bar schedule and total steel weight.',html:()=>`
+<div class="card"><div class="form-grid">${selectField('bbsDia','Diameter',['6','8','10','12','16','20','25','28','32','40'],'12','')}${field('bbsQty','Quantity','nos','number','1','')}${field('bbsCut','Cutting length','m','number','1','')}</div>
+<div class="actions"><button class="btn primary" onclick="addBBS()">+ Add bar</button><button class="btn" onclick="clearBBS()">Clear</button></div></div>
+<div class="card"><div class="card-title">Bar schedule</div><div class="table-wrap"><table class="table"><thead><tr><th>#</th><th>Dia</th><th>Qty</th><th>Cut length</th><th>Total length</th><th>Weight</th><th></th></tr></thead><tbody id="bbsBody"></tbody></table></div><div class="results" style="margin-top:12px">${res('bbsLen','Total length','')}${res('bbsWt','Total steel','primary','kg')}${res('bbsTon','Total steel','','ton')}</div><div id="bbsActions"></div></div>`},
+cutting:{title:'Stirrup / Tie Cutting Length',desc:'Quick rectangular stirrup cutting-length estimate with hooks.',html:()=>`
+<div class="card"><div class="form-grid">${field('tw','Beam/column width','mm','number','300','calcTie()')}${field('td','Beam/column depth','mm','number','450','calcTie()')}${field('cover','Clear cover','mm','number','25','calcTie()')}${field('hook','Hook allowance','mm','number','150','calcTie()')}${field('tieDia','Stirrup dia','mm','number','8','calcTie()')}${field('tieQty','No. of stirrups','nos','number','10','calcTie()')}</div></div>
+<div class="card"><div class="card-title">Result</div><div class="results">${res('tieCut','Cutting length','primary','mm')}${res('tieTotal','Total length','','m')}${res('tieWeight','Steel weight','green','kg')}</div><div class="note">This is a practical estimating formula. Confirm hook geometry, bend deductions and code detailing before fabrication.</div><div id="tieActions"></div></div>`},
+slab:{title:'RCC Slab Quantity',desc:'Estimate concrete, formwork and reinforcement from slab dimensions and spacing.',html:()=>`
+<div class="card"><div class="form-grid">${field('sl','Slab length','m','number','5','calcSlab()')}${field('sb','Slab width','m','number','4','calcSlab()')}${field('st','Thickness','mm','number','125','calcSlab()')}${field('sMain','Main bar dia','mm','number','10','calcSlab()')}${field('sMainSp','Main spacing','mm','number','150','calcSlab()')}${field('sDist','Distribution dia','mm','number','8','calcSlab()')}${field('sDistSp','Distribution spacing','mm','number','200','calcSlab()')}${field('sCover','Cover','mm','number','20','calcSlab()')}${field('sWaste','Steel wastage','%','number','3','calcSlab()')}</div></div>
+<div class="card"><div class="card-title">Quantity summary</div><div class="results">${res('slabConc','Concrete','primary','m³')}${res('slabForm','Formwork','','m²')}${res('slabSteel','Steel','green','kg')}${res('slabBars','Main bars','','nos')}</div><div class="detail" id="slabDetail"></div><div id="slabActions"></div></div>`},
+beam:{title:'RCC Beam Quantity',desc:'Concrete, formwork, longitudinal bars and stirrup estimate.',html:()=>`
+<div class="card"><div class="form-grid">${field('bl','Beam length','m','number','5','calcBeam()')}${field('bw','Beam width','mm','number','230','calcBeam()')}${field('bh','Beam depth','mm','number','450','calcBeam()')}${field('bMain','Main bar dia','mm','number','16','calcBeam()')}${field('bMainQty','Main bars','nos','number','4','calcBeam()')}${field('bStDia','Stirrup dia','mm','number','8','calcBeam()')}${field('bStSp','Stirrup spacing','mm','number','150','calcBeam()')}${field('bCover','Cover','mm','number','25','calcBeam()')}${field('bWaste','Steel wastage','%','number','3','calcBeam()')}</div></div>
+<div class="card"><div class="card-title">Quantity summary</div><div class="results">${res('beamConc','Concrete','primary','m³')}${res('beamForm','Formwork','','m²')}${res('beamSteel','Steel','green','kg')}${res('beamSt','Stirrups','','nos')}</div><div class="detail" id="beamDetail"></div><div id="beamActions"></div></div>`},
+column:{title:'RCC Column Quantity',desc:'Estimate concrete and reinforcement for a rectangular column.',html:()=>`
+<div class="card"><div class="form-grid">${field('cw','Column width','mm','number','300','calcColumn()')}${field('cd','Column depth','mm','number','450','calcColumn()')}${field('ch','Column height','m','number','3','calcColumn()')}${field('cMain','Vertical bar dia','mm','number','16','calcColumn()')}${field('cMainQty','Vertical bars','nos','number','8','calcColumn()')}${field('cTie','Tie dia','mm','number','8','calcColumn()')}${field('cTieSp','Tie spacing','mm','number','150','calcColumn()')}${field('cCover','Cover','mm','number','40','calcColumn()')}${field('cWaste','Steel wastage','%','number','3','calcColumn()')}</div></div>
+<div class="card"><div class="card-title">Quantity summary</div><div class="results">${res('colConc','Concrete','primary','m³')}${res('colForm','Formwork','','m²')}${res('colSteel','Steel','green','kg')}${res('colTies','Ties','','nos')}</div><div class="detail" id="colDetail"></div><div id="colActions"></div></div>`},
+footing:{title:'Isolated Footing Quantity',desc:'Concrete, excavation, formwork and basic reinforcement estimate.',html:()=>`
+<div class="card"><div class="form-grid">${field('fl','Footing length','m','number','1.8','calcFooting()')}${field('fw','Footing width','m','number','1.8','calcFooting()')}${field('ft','Footing thickness','mm','number','300','calcFooting()')}${field('fd','Excavation depth','m','number','1','calcFooting()')}${field('fDia','Bar dia','mm','number','12','calcFooting()')}${field('fSp','Bar spacing','mm','number','150','calcFooting()')}${field('fCover','Cover','mm','number','50','calcFooting()')}${field('fWaste','Steel wastage','%','number','3','calcFooting()')}</div></div>
+<div class="card"><div class="card-title">Quantity summary</div><div class="results">${res('footConc','Concrete','primary','m³')}${res('footExc','Excavation','','m³')}${res('footSteel','Steel','green','kg')}${res('footBars','Bars','','nos')}</div><div class="detail" id="footDetail"></div><div id="footActions"></div></div>`},
+brick:{title:'Brickwork & Mortar',desc:'Wall volume, openings, bricks, cement and sand.',html:()=>`
+<div class="card"><div class="form-grid">${field('brL','Wall length','m','number','10','calcBrick()')}${field('brH','Wall height','m','number','3','calcBrick()')}${selectField('brT','Wall thickness',['0.115|4 in / 115 mm','0.23|9 in / 230 mm','0.345|13.5 in / 345 mm'],'0.23','calcBrick()')}${selectField('brSize','Brick size',['190,90,90|Standard 190×90×90','200,100,100|Modular 200×100×100','230,115,75|English 230×115×75'],'190,90,90','calcBrick()')}${selectField('brRatio','Mortar ratio',['4|1:4','5|1:5','6|1:6'],'6','calcBrick()')}${field('brMortar','Joint thickness','mm','number','12','calcBrick()')}${field('brWaste','Brick wastage','%','number','5','calcBrick()')}${field('brOpen','Opening deduction','m²','number','0','calcBrick()')}</div></div>
+<div class="card"><div class="card-title">Results</div><div class="results">${res('bricks','Bricks','primary','nos')}${res('brCement','Cement','','bags')}${res('brSand','Sand','orange','m³')}${res('brMortarVol','Mortar','','m³')}</div><div class="detail" id="brickDetail"></div><div id="brickActions"></div></div>`},
+plaster:{title:'Plaster Quantity',desc:'Cement and sand based on plaster area, thickness and ratio.',html:()=>`
+<div class="card"><div class="form-grid">${field('pa','Area','m²','number','100','calcPlaster()')}${field('pt','Thickness','mm','number','12','calcPlaster()')}${selectField('pr','Ratio',['3|1:3','4|1:4','5|1:5','6|1:6'],'4','calcPlaster()')}${field('pdry','Dry volume factor','','number','1.33','calcPlaster()')}${field('pw','Wastage','%','number','0','calcPlaster()')}</div></div>
+<div class="card"><div class="card-title">Results</div><div class="results">${res('pCement','Cement','primary','bags')}${res('pSand','Sand','orange','m³')}${res('pWet','Wet mortar','','m³')}${res('pDry','Dry mortar','','m³')}</div><div id="plasterActions"></div></div>`},
+paint:{title:'Paint, Primer & Putty',desc:'Coverage-based finishing quantity calculator.',html:()=>`
+<div class="card"><div class="form-grid">${field('paintA','Paintable area','m²','number','100','calcPaint()')}${field('paintCoat','Paint coats','nos','number','2','calcPaint()')}${field('paintCov','Paint coverage','m²/L','number','10','calcPaint()')}${field('primerCov','Primer coverage','m²/L','number','12','calcPaint()')}${field('puttyRate','Putty rate','kg/m²/coat','number','0.5','calcPaint()')}${field('paintWaste','Wastage','%','number','5','calcPaint()')}</div></div>
+<div class="card"><div class="card-title">Results</div><div class="results">${res('paintL','Paint','primary','L')}${res('primerL','Primer','','L')}${res('puttyKg','Putty','green','kg')}</div><div class="note">Coverage varies by product, substrate and application method. Use the manufacturer's data sheet for final procurement.</div><div id="paintActions"></div></div>`},
+area:{title:'Area, Slope & Gradient',desc:'Calculate slope %, angle, gradient and horizontal/vertical dimensions.',html:()=>`
+<div class="card"><div class="form-grid">${field('rise','Rise / vertical','m','number','3','calcArea()')}${field('run','Run / horizontal','m','number','4','calcArea()')}${field('slopeLen','Slope length','m','number','','calcArea()')}</div></div>
+<div class="card"><div class="card-title">Results</div><div class="results">${res('slopePct','Slope','primary','%')}${res('slopeAngle','Angle','','°')}${res('gradient','Gradient','','1 : x')}${res('slopeHyp','Slope length','green','m')}</div><div id="areaActions"></div></div>`},
+estimator:{title:'Material Cost Estimator',desc:'Enter quantities and rates to build a quick material + labour estimate.',html:()=>`
+<div class="card"><div class="card-head"><div class="card-title">Project inputs</div><button class="btn" onclick="addEstimate()">+ Add item</button></div>
+<div class="table-wrap"><table class="table"><thead><tr><th>Material / work</th><th>Qty</th><th>Unit</th><th>Rate ₹</th><th>Total ₹</th><th></th></tr></thead><tbody id="estBody"></tbody></table></div>
+<div class="actions"><button class="btn primary" onclick="addEstimate()">Add row</button><button class="btn" onclick="calcEstimate()">Recalculate</button></div></div>
+<div class="card"><div class="results">${res('estMat','Material total','primary','₹')}${res('estLab','Labour total','','₹')}${res('estGrand','Grand total','green','₹')}${res('estWaste','Wastage allowance','','₹')}</div><div class="note">Rates are user-entered. No market price is assumed.</div><div id="estimateActions"></div></div>`},
+water:{title:'Water / Water-Cement Ratio',desc:'Quick water requirement from cement quantity and W/C ratio.',html:()=>`
+<div class="card"><div class="form-grid">${field('cementKg','Cement quantity','kg','number','350','calcWater()')}${field('wc','Water/Cement ratio','','number','0.45','calcWater()')}${field('waterWaste','Water allowance','%','number','0','calcWater()')}</div></div>
+<div class="card"><div class="card-title">Results</div><div class="results">${res('waterL','Water','primary','L')}${res('waterKg','Water','','kg')}${res('waterM3','Water volume','green','m³')}</div><div class="note">Use approved mix-design water demand for structural concrete; this tool is only a quick W/C calculation.</div><div id="waterActions"></div></div>`},
+lap:{title:'Lap & Development Length',desc:'Reference-style calculation using user-selected multiples of bar diameter.',html:()=>`
+<div class="card"><div class="form-grid">${field('ldDia','Bar diameter','mm','number','16','calcLap()')}${field('ldMult','Development multiple','×d','number','47','calcLap()')}${field('lapMult','Lap multiple','×Ld','number','1','calcLap()')}</div></div>
+<div class="card"><div class="results">${res('ldMm','Development length','primary','mm')}${res('ldM','Development length','','m')}${res('lapMm','Lap length','green','mm')}</div><div class="note">Ld/lap values depend on grade, bar type, bond, stress, splice location and governing code. This calculator applies only the multiples you enter; verify final detailing from the approved design/code.</div><div id="lapActions"></div></div>`},
+stair:{title:'Staircase Geometry',desc:'Calculate total rise/run, slope and approximate waist-slab volume.',html:()=>`
+<div class="card"><div class="form-grid">${field('riser','Riser height','mm','number','150','calcStair()')}${field('tread','Tread width','mm','number','270','calcStair()')}${field('steps','Number of risers','nos','number','18','calcStair()')}${field('stairW','Stair width','m','number','1.2','calcStair()')}${field('waist','Waist thickness','mm','number','150','calcStair()')}</div></div>
+<div class="card"><div class="results">${res('stairRise','Total rise','primary','m')}${res('stairRun','Total run','','m')}${res('stairAngle','Slope','green','°')}${res('stairVol','Waist volume','','m³')}</div><div class="note">Geometry estimate only. Landing dimensions, support conditions and structural design are not included.</div><div id="stairActions"></div></div>`},
+opening:{title:'Wall Opening Deduction',desc:'Calculate gross wall area, openings and net plaster/paint area.',html:()=>`
+<div class="card"><div class="form-grid">${field('wallL','Wall length','m','number','10','calcOpening()')}${field('wallH','Wall height','m','number','3','calcOpening()')}${field('doors','Doors','nos','number','1','calcOpening()')}${field('doorW','Door width','m','number','1','calcOpening()')}${field('doorH','Door height','m','number','2.1','calcOpening()')}${field('windows','Windows','nos','number','2','calcOpening()')}${field('winW','Window width','m','number','1.2','calcOpening()')}${field('winH','Window height','m','number','1.2','calcOpening()')}</div></div>
+<div class="card"><div class="results">${res('grossA','Gross area','primary','m²')}${res('openA','Opening area','','m²')}${res('netA','Net area','green','m²')}</div><div id="openingActions"></div></div>`}
+};
+
+function field(id,label,unit,type='number',value='',on='',hidden=false){
+return `<div class="form-group ${hidden?'hidden':''}"><label for="${id}">${label}</label><div class="input"><input id="${id}" type="${type}" value="${value}" step="any" ${on?`oninput="${on}"`:''}>${unit?`<span class="unit">${unit}</span>`:''}</div></div>`}
+function selectField(id,label,opts,value,on=''){
+return `<div class="form-group"><label for="${id}">${label}</label><div class="input"><select id="${id}" ${on?`onchange="${on}"`:''}>${opts.map(o=>{let[a,b]=o.includes('|')?o.split('|'): [o,o];return `<option value="${a}" ${a===value?'selected':''}>${b}</option>`}).join('')}</select></div></div>`}
+function res(id,label,cls='',unit=''){return `<div class="result ${cls}"><b id="${id}">—</b><span>${label}${unit?' ('+unit+')':''}</span></div>`}
+function clearFields(...ids){ids.forEach(id=>{if($(id))$(id).value=''})}
+
+function openTool(id){
+  const t=tools.find(x=>x.id===id);if(!t)return;
+  $('home').style.display='none';$('workspace').classList.add('active');$('wsTitle').textContent=t.name;$('wsDesc').textContent=t.desc;
+  $('toolContent').innerHTML=shells[id].html();
+  initTool(id);window.scrollTo({top:0,behavior:'smooth'});
+}
+function closeTool(){$('workspace').classList.remove('active');$('home').style.display='block';window.scrollTo({top:0,behavior:'smooth'})}
+function initTool(id){
+ if(id==='converter'){setConv('length',q('#convTabs .subtab'))}
+ if(id==='bbs'){renderBBS()}
+ if(id==='estimator'){renderEstimate()}
+ if(id==='angle')calcAngle();if(id==='mix')calcMix();if(id==='volume')calcVolume();if(id==='steel')calcSteel();
+ if(id==='slab')calcSlab();if(id==='beam')calcBeam();if(id==='column')calcColumn();if(id==='footing')calcFooting();
+ if(id==='brick')calcBrick();if(id==='plaster')calcPlaster();if(id==='paint')calcPaint();if(id==='area')calcArea();
+ if(id==='water')calcWater();if(id==='lap')calcLap();if(id==='stair')calcStair();if(id==='opening')calcOpening();
+ if(id==='cutting')calcTie();
+}
+
+function calcAngle(){
+ const a=num('a'),b=num('b'),c=num('c');let hyp=null,A=null,B=null,area=null,per=null;
+ const va=safe(a)&&a>0,vb=safe(b)&&b>0,vc=safe(c)&&c>0;
+ if(va&&vb){hyp=Math.hypot(a,b);area=a*b/2;per=a+b+hyp;A=Math.atan2(a,b)*180/Math.PI;B=90-A}
+ if(va&&vc&&c>a){const bb=Math.sqrt(c*c-a*a);hyp=c;area=a*bb/2;per=a+bb+c;A=Math.asin(a/c)*180/Math.PI;B=90-A}
+ if(vb&&vc&&c>b){const aa=Math.sqrt(c*c-b*b);hyp=c;area=aa*b/2;per=aa+b+c;B=Math.asin(b/c)*180/Math.PI;A=90-B}
+ if(va&&vb&&vc){const err=Math.abs(a*a+b*b-c*c);$('angVerify').textContent=err<0.05?'✓ Valid right triangle within ±0.05 m tolerance.':'⚠ Values do not satisfy a²+b²=c² within ±0.05 m.'}
+ else $('angVerify').textContent='Enter any two sides to calculate the third.';
+ val('angHyp',hyp,'m');val('angArea',area,'m²');val('angPer',per,'m');val('angA',A,'°');val('angB',B,'°');
+ if(hyp) $('angleActions').innerHTML=actionBar(`Right Triangle\nHypotenuse: ${fmt(hyp)} m\nArea: ${fmt(area)} m²\nPerimeter: ${fmt(per)} m\nAngle A: ${fmt(A)}°\nAngle B: ${fmt(B)}°`);
+}
+function calcMix(){
+ const v=num('mixVol'),dry=num('mixDry')||1.54,bag=num('mixBag')||50,w=num('mixWaste')||0;
+ if(!v||v<=0)return;
+ let r=$('mixGrade').value.split(',').map(Number);if($('mixGrade').value==='custom'){r=[num('mixR1')||1,num('mixR2')||1.5,num('mixR3')||3];$('mixCustom').classList.remove('hidden')}else $('mixCustom').classList.add('hidden');
+ const dv=v*dry*(1+w/100),sum=r.reduce((a,b)=>a+b,0),cv=dv*r[0]/sum,sv=dv*r[1]/sum,av=dv*r[2]/sum,ck=cv*(num('mixCementD')||1440),sk=sv*(num('mixSandD')||1600),ak=av*(num('mixAggD')||1500);
+ val('mixCement',Math.ceil(ck/bag),'bags');val('mixSand',sv,'m³');val('mixAgg',av,'m³');val('mixCementKg',ck,'kg');
+ $('mixDetail').innerHTML=rows([['Dry volume',dv+' m³'],['Cement',ck+' kg / '+Math.ceil(ck/bag)+' bags'],['Sand',sk+' kg'],['Aggregate',ak+' kg']]);
+ $('mixActions').innerHTML=actionBar(`Concrete Mix\nRatio: ${r.join(' : ')}\nCement: ${fmt(Math.ceil(ck/bag),0)} bags (${fmt(ck,1)} kg)\nSand: ${fmt(sv,3)} m³\nAggregate: ${fmt(av,3)} m³`);
+}
+function calcVolume(){
+ const units={m:1,cm:.01,mm:.001,ft:.3048,in:.0254};const l=num('vl'),b=num('vb'),h=num('vh');if(!(l>0&&b>0&&h>0))return;
+ const v=l*units[$('vlu').value]*b*units[$('vbu').value]*h*units[$('vhu').value],d=$('density').value==='custom'?num('customDensity')||2400:parseFloat($('density').value),wt=v*d;
+ val('vM3',v,'m³');val('vFt',v*35.3146667,'ft³');val('vWt',wt,'kg');val('vTon',wt/1000,'ton');val('vArea',l*units[$('vlu').value]*b*units[$('vbu').value],'m²');val('vL',v*1000,'L');val('vYd',v*1.30795,'yd³');
+ $('volumeActions').innerHTML=actionBar(`Volume & Weight\nVolume: ${fmt(v,3)} m³ (${fmt(v*35.3147,2)} ft³)\nWeight: ${fmt(wt,1)} kg (${fmt(wt/1000,3)} ton)`);
+}
+function rows(a){return a.map(x=>`<div class="detail-row"><span>${x[0]}</span><span>${x[1]}</span></div>`).join('')}
+const conv={
+length:{m:1,cm:.01,mm:.001,km:1000,ft:.3048,in:.0254,yd:.9144,mi:1609.344},
+area:{'m²':1,'cm²':1e-4,'mm²':1e-6,'ft²':.09290304,'in²':.00064516,'yd²':.83612736,acre:4046.856422},
+volume:{'m³':1,L:.001,'cm³':1e-6,'ft³':.0283168466,'in³':.000016387064,'yd³':.764554858},
+weight:{kg:1,g:.001,ton:1000,lb:.45359237,oz:.0283495231},
+pressure:{Pa:1,kPa:1000,MPa:1e6,'N/mm²':1e6,bar:1e5,psi:6894.757, 'kg/cm²':98066.5},
+force:{N:1,kN:1000,MN:1e6,kgf:9.80665,lbf:4.44822},
+density:{'kg/m³':1,'g/cm³':1000,'lb/ft³':16.018463},
+flow:{'m³/s':1,'L/s':.001,'L/min':.001/60,'m³/h':1/3600}
+};let convType='length';
+function setConv(type,btn){convType=type;qa('.subtab').forEach(x=>x.classList.remove('active'));btn?.classList.add('active');const keys=Object.keys(conv[type]);$('cf').innerHTML=keys.map(x=>`<option>${x}</option>`).join('');$('ct').innerHTML=keys.map(x=>`<option>${x}</option>`).join('');$('ct').selectedIndex=Math.min(1,keys.length-1);calcConv()}
+function calcConv(){const v=num('cv');if(!Number.isFinite(v)){$('co').value='';return}const a=$('cf').value,b=$('ct').value;$('co').value=(v*conv[convType][a]/conv[convType][b]).toLocaleString('en-IN',{maximumFractionDigits:8})}
+function swapConv(){const a=$('cf'),b=$('ct'),x=a.value;a.value=b.value;b.value=x;calcConv()}
+function calcSteel(){const d=num('sd'),l=num('sl'),qv=num('sq')||1;if(!(d>0&&l>0))return;const per=d*d/162,total=l*qv*per;val('skg',total,'kg');val('ston',total/1000,'ton');val('sperm',per,'kg/m');val('seach',l*per,'kg');$('stot').textContent=fmt(l*qv,2)+' m';$('steelActions').innerHTML=actionBar(`Steel Weight\nDia: ${d} mm\nBars: ${qv}\nTotal length: ${fmt(l*qv,2)} m\nTotal weight: ${fmt(total,2)} kg`)}
+let bbs=[];
+function addBBS(){const d=num('bbsDia'),qv=num('bbsQty'),l=num('bbsCut');if(!(d>0&&qv>0&&l>0))return toast('Enter valid BBS values');bbs.push({d,q:qv,l});renderBBS()}
+function renderBBS(){const body=$('bbsBody');if(!body)return;let tl=0,tw=0;body.innerHTML=bbs.map((x,i)=>{const len=x.q*x.l,w=len*x.d*x.d/162;tl+=len;tw+=w;return `<tr><td>${i+1}</td><td>${x.d} mm</td><td>${x.q}</td><td>${fmt(x.l,3)} m</td><td>${fmt(len,2)} m</td><td>${fmt(w,2)} kg</td><td><button class="btn danger" onclick="bbs.splice(${i},1);renderBBS()">×</button></td></tr>`}).join('')||'<tr><td colspan="7" style="text-align:center;color:var(--muted)">No bars added</td></tr>';val('bbsLen',tl,'m');val('bbsWt',tw,'kg');val('bbsTon',tw/1000,'ton');$('bbsActions').innerHTML=tw?actionBar(`BBS Summary\nRows: ${bbs.length}\nTotal length: ${fmt(tl,2)} m\nTotal steel: ${fmt(tw,2)} kg`):''}
+function clearBBS(){bbs=[];renderBBS()}
+function calcTie(){const w=num('tw'),d=num('td'),c=num('cover')||0,h=num('hook')||0,dia=num('tieDia')||0,qv=num('tieQty')||1;if(!(w>0&&d>0))return;const innerW=w-2*c-dia,innerD=d-2*c-dia,cut=2*(innerW+innerD)+h,total=cut*qv/1000,wt=total*dia*dia/162;val('tieCut',cut,'mm');val('tieTotal',total,'m');val('tieWeight',wt,'kg');$('tieActions').innerHTML=actionBar(`Stirrup Cutting\nCutting length: ${fmt(cut,0)} mm\nQuantity: ${qv}\nTotal length: ${fmt(total,2)} m\nSteel: ${fmt(wt,2)} kg`)}
+function calcSlab(){const l=num('sl'),b=num('sb'),t=num('st')/1000,md=num('sMain'),ms=num('sMainSp'),dd=num('sDist'),ds=num('sDistSp'),cover=num('sCover'),w=num('sWaste')||0;if(!(l>0&&b>0&&t>0))return;const conc=l*b*t,form=2*(l*b+l*t+b*t);const mainN=Math.ceil((b*1000-2*cover)/ms)+1,distN=Math.ceil((l*1000-2*cover)/ds)+1;const mainLen=mainN*(l-2*cover/1000),distLen=distN*(b-2*cover/1000),steel=(mainLen*md*md/162+distLen*dd*dd/162)*(1+w/100);val('slabConc',conc,'m³');val('slabForm',2*l*b+l*t+b*t,'m²');val('slabSteel',steel,'kg');val('slabBars',mainN,'nos');$('slabDetail').innerHTML=rows([['Main bars',mainN+' nos × '+fmt(l-2*cover/1000,3)+' m'],['Distribution bars',distN+' nos × '+fmt(b-2*cover/1000,3)+' m'],['Main steel',fmt(mainLen*md*md/162,2)+' kg'],['Distribution steel',fmt(distLen*dd*dd/162,2)+' kg'],['Wastage',w+'%']]);$('slabActions').innerHTML=actionBar(`RCC Slab\nConcrete: ${fmt(conc,3)} m³\nFormwork: ${fmt(form,2)} m²\nMain bars: ${mainN} nos\nDistribution bars: ${distN} nos\nSteel: ${fmt(steel,2)} kg`)}
+function calcBeam(){const l=num('bl'),w=num('bw')/1000,h=num('bh')/1000,md=num('bMain'),mq=num('bMainQty'),sd=num('bStDia'),ss=num('bStSp'),c=num('bCover'),wa=num('bWaste')||0;if(!(l>0&&w>0&&h>0))return;const conc=l*w*h,form=l*(2*h+w);const stirN=Math.ceil(l*1000/ss)+1,cut=2*((w*1000-2*c-sd)+(h*1000-2*c-sd))+150,stLen=stirN*cut/1000,mainLen=mq*l,steel=(mainLen*md*md/162+stLen*sd*sd/162)*(1+wa/100);val('beamConc',conc,'m³');val('beamForm',form,'m²');val('beamSteel',steel,'kg');val('beamSt',stirN,'nos');$('beamDetail').innerHTML=rows([['Main bars',mq+' × '+fmt(l,2)+' m'],['Stirrups',stirN+' nos'],['Stirrup cutting length',fmt(cut,0)+' mm'],['Total stirrup length',fmt(stLen,2)+' m']]);$('beamActions').innerHTML=actionBar(`RCC Beam\nConcrete: ${fmt(conc,3)} m³\nFormwork: ${fmt(form,2)} m²\nMain bars: ${mq}\nStirrups: ${stirN}\nSteel: ${fmt(steel,2)} kg`)}
+function calcColumn(){const w=num('cw')/1000,d=num('cd')/1000,h=num('ch'),md=num('cMain'),mq=num('cMainQty'),td=num('cTie'),sp=num('cTieSp'),c=num('cCover'),wa=num('cWaste')||0;if(!(w>0&&d>0&&h>0))return;const conc=w*d*h,form=2*h*(w+d);const n=Math.ceil(h*1000/sp)+1,cut=2*((w*1000-2*c-td)+(d*1000-2*c-td))+150,tl=n*cut/1000,vl=mq*h,steel=(vl*md*md/162+tl*td*td/162)*(1+wa/100);val('colConc',conc,'m³');val('colForm',form,'m²');val('colSteel',steel,'kg');val('colTies',n,'nos');$('colDetail').innerHTML=rows([['Vertical bars',mq+' × '+fmt(h,2)+' m'],['Ties',n+' nos'],['Tie cutting length',fmt(cut,0)+' mm'],['Total tie length',fmt(tl,2)+' m']]);$('colActions').innerHTML=actionBar(`RCC Column\nConcrete: ${fmt(conc,3)} m³\nFormwork: ${fmt(form,2)} m²\nVertical bars: ${mq}\nTies: ${n}\nSteel: ${fmt(steel,2)} kg`)}
+function calcFooting(){const l=num('fl'),w=num('fw'),t=num('ft')/1000,ed=num('fd'),dia=num('fDia'),sp=num('fSp'),c=num('fCover'),wa=num('fWaste')||0;if(!(l>0&&w>0&&t>0))return;const conc=l*w*t,exc=l*w*ed,nb=Math.ceil((w*1000-2*c)/sp)+1,nt=Math.ceil((l*1000-2*c)/sp)+1,len1=nb*(l-2*c/1000),len2=nt*(w-2*c/1000),steel=(len1+len2)*dia*dia/162*(1+wa/100);val('footConc',conc,'m³');val('footExc',exc,'m³');val('footSteel',steel,'kg');val('footBars',nb+nt,'nos');$('footDetail').innerHTML=rows([['Bars each direction',nb+' / '+nt],['Length direction 1',fmt(len1,2)+' m'],['Length direction 2',fmt(len2,2)+' m'],['Cover',c+' mm']]);$('footActions').innerHTML=actionBar(`Footing\nConcrete: ${fmt(conc,3)} m³\nExcavation: ${fmt(exc,3)} m³\nBars: ${nb+nt} nos\nSteel: ${fmt(steel,2)} kg`)}
+function calcBrick(){const l=num('brL'),h=num('brH'),th=parseFloat($('brT').value),[bl,bw,bh]=$('brSize').value.split(',').map(Number).map(x=>x/1000),ratio=num('brRatio')||6,j=num('brMortar')/1000,wa=num('brWaste')||0,open=num('brOpen')||0;if(!(l>0&&h>0))return;const wall=Math.max(0,l*h-open)*th,unit=(bl+j)*(bw+j)*(bh+j),n=Math.ceil(wall/unit),nw=Math.ceil(n*(1+wa/100)),mortar=Math.max(0,wall-n*bl*bw*bh),dry=mortar*1.33,cv=dry/(1+ratio),sv=dry*ratio/(1+ratio),bags=Math.ceil(cv*1440/50);val('bricks',nw,'nos');val('brCement',bags,'bags');val('brSand',sv,'m³');val('brMortarVol',mortar,'m³');$('brickDetail').innerHTML=rows([['Net wall volume',fmt(wall,3)+' m³'],['Base bricks',n+' nos'],['Bricks incl. wastage',nw+' nos'],['Mortar wet volume',fmt(mortar,3)+' m³'],['Mortar dry volume',fmt(dry,3)+' m³']]);$('brickActions').innerHTML=actionBar(`Brickwork\nBricks: ${nw} nos\nCement: ${bags} bags\nSand: ${fmt(sv,3)} m³\nMortar: ${fmt(mortar,3)} m³`)}
+function calcPlaster(){const a=num('pa'),t=num('pt')/1000,r=num('pr')||4,dryF=num('pdry')||1.33,w=num('pw')||0;if(!(a>0&&t>0))return;const wet=a*t,dry=wet*dryF*(1+w/100),cv=dry/(1+r),sv=dry*r/(1+r),bags=Math.ceil(cv*1440/50);val('pCement',bags,'bags');val('pSand',sv,'m³');val('pWet',wet,'m³');val('pDry',dry,'m³');$('plasterActions').innerHTML=actionBar(`Plaster\nArea: ${fmt(a,2)} m²\nCement: ${bags} bags\nSand: ${fmt(sv,3)} m³\nWet mortar: ${fmt(wet,3)} m³`)}
+function calcPaint(){const a=num('paintA'),co=num('paintCoat')||1,pc=num('paintCov')||10,pr=num('primerCov')||12,pk=num('puttyRate')||.5,w=num('paintWaste')||0;if(!(a>0))return;const f=1+w/100,paint=a*co/pc*f,primer=a/pr*f,putty=a*co*pk*f;val('paintL',paint,'L');val('primerL',primer,'L');val('puttyKg',putty,'kg');$('paintActions').innerHTML=actionBar(`Paint\nPaint: ${fmt(paint,2)} L\nPrimer: ${fmt(primer,2)} L\nPutty: ${fmt(putty,1)} kg`)}
+function calcArea(){const r=num('rise'),run=num('run'),sl=num('slopeLen');let hyp=(r>0&&run>0)?Math.hypot(r,run):(sl>0&&r>0?sl:sl>0&&run>0?sl:null);if(!(r>0&&run>0)&&!hyp)return;const angle=r>0&&run>0?Math.atan2(r,run)*180/Math.PI:null,pct=r>0&&run>0?r/run*100:null;val('slopePct',pct,'%');val('slopeAngle',angle,'°');$('gradient').textContent=(r>0&&run>0)?'1 : '+fmt(run/r,2):'—';val('slopeHyp',hyp,'m');$('areaActions').innerHTML=hyp?actionBar(`Slope\nRise: ${fmt(r)} m\nRun: ${fmt(run)} m\nSlope: ${pct!==null?fmt(pct,2)+'%':'—'}\nAngle: ${angle!==null?fmt(angle,2)+'°':'—'}\nLength: ${fmt(hyp,2)} m`):''}
+function calcWater(){const c=num('cementKg'),r=num('wc'),w=num('waterWaste')||0;if(!(c>0&&r>0))return;const kg=c*r*(1+w/100);val('waterL',kg,'L');val('waterKg',kg,'kg');val('waterM3',kg/1000,'m³');$('waterActions').innerHTML=actionBar(`Water / W-C Ratio\nCement: ${fmt(c,1)} kg\nW/C ratio: ${r}\nWater: ${fmt(kg,1)} L`)}
+function calcLap(){const d=num('ldDia'),m=num('ldMult')||47,lm=num('lapMult')||1;if(!(d>0))return;const ld=d*m,lap=ld*lm;val('ldMm',ld,'mm');val('ldM',ld/1000,'m');val('lapMm',lap,'mm');$('lapActions').innerHTML=actionBar(`Lap & Development\nDia: ${d} mm\nDevelopment: ${fmt(ld,0)} mm\nLap: ${fmt(lap,0)} mm`)}
+function calcStair(){const r=num('riser'),t=num('tread'),n=num('steps'),w=num('stairW'),wa=num('waist')/1000;if(!(r>0&&t>0&&n>0))return;const rise=r*n/1000,run=t*n/1000,ang=Math.atan2(r,t)*180/Math.PI,sl=Math.hypot(r*n,t*n)/1000,vol=sl*w*wa;val('stairRise',rise,'m');val('stairRun',run,'m');val('stairAngle',ang,'°');val('stairVol',vol,'m³');$('stairActions').innerHTML=actionBar(`Staircase\nTotal rise: ${fmt(rise,2)} m\nTotal run: ${fmt(run,2)} m\nSlope: ${fmt(ang,2)}°\nApprox waist volume: ${fmt(vol,3)} m³`)}
+function calcOpening(){const wl=num('wallL'),wh=num('wallH'),d=num('doors')||0,dw=num('doorW')||0,dh=num('doorH')||0,wn=num('windows')||0,ww=num('winW')||0,whi=num('winH')||0;if(!(wl>0&&wh>0))return;const gross=wl*wh,open=d*dw*dh+wn*ww*whi,net=Math.max(0,gross-open);val('grossA',gross,'m²');val('openA',open,'m²');val('netA',net,'m²');$('openingActions').innerHTML=actionBar(`Wall Openings\nGross area: ${fmt(gross,2)} m²\nOpening area: ${fmt(open,2)} m²\nNet area: ${fmt(net,2)} m²`)}
+let estRows=[];
+function addEstimate(){estRows.push({name:'Material',qty:1,unit:'unit',rate:0,type:'material'});renderEstimate()}
+function renderEstimate(){const b=$('estBody');if(!b)return;if(!estRows.length)addEstimate();b.innerHTML=estRows.map((r,i)=>`<tr><td><input value="${r.name}" oninput="estRows[${i}].name=this.value" style="width:150px;background:transparent;border:0;color:var(--text)"></td><td><input type="number" value="${r.qty}" oninput="estRows[${i}].qty=+this.value;calcEstimate()" style="width:75px;background:transparent;border:0;color:var(--text)"></td><td><input value="${r.unit}" oninput="estRows[${i}].unit=this.value" style="width:75px;background:transparent;border:0;color:var(--text)"></td><td><input type="number" value="${r.rate}" oninput="estRows[${i}].rate=+this.value;calcEstimate()" style="width:90px;background:transparent;border:0;color:var(--text)"></td><td id="et${i}">₹ ${fmt(r.qty*r.rate,2)}</td><td><button class="btn danger" onclick="estRows.splice(${i},1);renderEstimate();calcEstimate()">×</button></td></tr>`).join('');calcEstimate()}
+function calcEstimate(){let mat=0,lab=0;estRows.forEach((r,i)=>{const x=(+r.qty||0)*(+r.rate||0);if(r.type==='labour')lab+=x;else mat+=x;if($('et'+i))$('et'+i).textContent='₹ '+fmt(x,2)});const waste=mat*.03;val('estMat',mat,'₹');val('estLab',lab,'₹');val('estWaste',waste,'₹');val('estGrand',mat+lab+waste,'₹');if($('estimateActions'))$('estimateActions').innerHTML=actionBar(`Estimate\nMaterials: ₹${fmt(mat,2)}\nLabour: ₹${fmt(lab,2)}\nWastage allowance (3% materials): ₹${fmt(waste,2)}\nGrand total: ₹${fmt(mat+lab+waste,2)}`)}
+function updateHistory(){const a=JSON.parse(localStorage.getItem('ce_history')||'[]');$('historyCount').textContent=a.length}
+function openHistory(){const a=JSON.parse(localStorage.getItem('ce_history')||'[]');$('historyBody').innerHTML=a.length?a.map(x=>`<div class="history-item"><b>${escapeHtml(x.tag)}</b><small>${new Date(x.id).toLocaleString('en-IN')}</small><pre>${escapeHtml(x.text)}</pre></div>`).join(''):'<div style="text-align:center;color:var(--muted);padding:50px 10px">No saved calculations yet.</div>';$('drawer').classList.add('show');$('drawerOverlay').classList.add('show')}
+function closeHistory(){$('drawer').classList.remove('show');$('drawerOverlay').classList.remove('show')}
+function clearHistory(){localStorage.removeItem('ce_history');updateHistory();openHistory();toast('History cleared')}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+$('themeBtn').onclick=()=>{const d=document.documentElement;const dark=d.dataset.theme==='dark';d.dataset.theme=dark?'':'dark';localStorage.setItem('ce_theme',d.dataset.theme||'light');$('themeBtn').textContent=dark?'☾':'☀'}
+if(localStorage.getItem('ce_theme')==='dark'){document.documentElement.dataset.theme='dark';$('themeBtn').textContent='☀'}
+renderTools();updateHistory();
+</script>
+</body>
+</html>
