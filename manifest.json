@@ -1,5 +1,5 @@
 {
-  "name": "CivilCalc Pro V7.1 Field OS",
+  "name": "CivilCalc Pro V7.2 Field OS",
   "short_name": "CivilCalc",
   "description": "Offline-first civil engineering calculators, projects, BOQ, BBS, QC and site productivity.",
   "start_url": "./index.html",
@@ -77,5 +77,6 @@
         }
       ]
     }
-  ]
+  ],
+  "id": "./index.html"
 }
