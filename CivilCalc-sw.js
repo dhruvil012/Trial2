@@ -1,30 +1,81 @@
-const CACHE='civilcalc-v73-20260810-complete';
-const CORE=['./','./index.html','./manifest.json'];
-const OPTIONAL=['./icon-192.png','./icon-512.png','./icon-512-maskable.png'];
-self.addEventListener('install',event=>event.waitUntil((async()=>{
-  const cache=await caches.open(CACHE);
-  await cache.addAll(CORE);
-  await Promise.allSettled(OPTIONAL.map(url=>cache.add(url)));
-  await self.skipWaiting();
-})()));
-self.addEventListener('activate',event=>event.waitUntil((async()=>{
-  const keys=await caches.keys();
-  await Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)));
-  await self.clients.claim();
-})()));
-self.addEventListener('fetch',event=>{
-  if(event.request.method!=='GET')return;
-  const url=new URL(event.request.url);if(url.origin!==self.location.origin)return;
-  if(event.request.mode==='navigate'){
-    event.respondWith((async()=>{
-      try{const response=await fetch(event.request);if(response&&response.ok){const cache=await caches.open(CACHE);cache.put('./index.html',response.clone());}return response;}
-      catch(e){return (await caches.match('./index.html')) || Response.error();}
-    })());return;
-  }
-  event.respondWith((async()=>{
-    const cached=await caches.match(event.request);if(cached)return cached;
-    try{const response=await fetch(event.request);if(response&&response.ok){const cache=await caches.open(CACHE);cache.put(event.request,response.clone());}return response;}
-    catch(e){return Response.error();}
-  })());
+// Improved service worker for CivilCalc
+const CACHE_NAME = 'civilcalc-v73-20260810-complete';
+const CORE_ASSETS = [
+  './',
+  './index.html',
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png',
+  './icon-512-maskable.png'
+];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(CORE_ASSETS)).then(() => self.skipWaiting())
+  );
 });
-self.addEventListener('message',event=>{if(event.data==='SKIP_WAITING')self.skipWaiting();});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys.map((key) => {
+          if (key !== CACHE_NAME) return caches.delete(key);
+          return Promise.resolve();
+        })
+      )
+    ).then(() => self.clients.claim())
+  );
+});
+
+// Simple fetch handler with cache-first for assets and navigation fallback
+self.addEventListener('fetch', (event) => {
+  // Only handle GET requests
+  if (event.request.method !== 'GET') return;
+
+  const request = event.request;
+  const url = new URL(request.url);
+
+  // Only handle same-origin requests
+  if (url.origin !== self.location.origin) return;
+
+  // For navigation requests (HTML pages), try network then fallback to cache
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then((networkResponse) => {
+          // Update the cache with the latest index.html so offline stays fresh
+          if (networkResponse && networkResponse.ok) {
+            caches.open(CACHE_NAME).then((cache) => cache.put('./index.html', networkResponse.clone()));
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match('./index.html'))
+    );
+    return;
+  }
+
+  // For other requests, respond with cache first, then network, and update cache when network succeeds
+  event.respondWith(
+    caches.match(request).then((cached) => {
+      const networkFetch = fetch(request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.ok) {
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, networkResponse.clone()));
+          }
+          return networkResponse.clone();
+        })
+        .catch(() => null);
+
+      // Return cached response if available immediately, otherwise wait for network
+      return cached || networkFetch.then((res) => res) || new Response('', { status: 404, statusText: 'Not Found' });
+    })
+  );
+});
+
+self.addEventListener('message', (event) => {
+  if (!event.data) return;
+  if (event.data.type === 'SKIP_WAITING' || event.data === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
